@@ -14,9 +14,10 @@ class DataCollectionCellView: UICollectionViewCell {
     let heelLabel: UILabel = {
         let label = UILabel()
         
-        label.font = Resources.Fonts.helveticaRegular(with: 27)
+        label.font = Resources.Fonts.helveticaRegular(with: 24)
         label.textColor = Resources.Colors.active
         label.text = "Heel".uppercased()
+        label.textAlignment = .left
         
         return label
     }()
@@ -24,9 +25,10 @@ class DataCollectionCellView: UICollectionViewCell {
     let pitchLabel: UILabel = {
         let label = UILabel()
         
-        label.font = Resources.Fonts.helveticaRegular(with: 27)
+        label.font = Resources.Fonts.helveticaRegular(with: 24)
         label.textColor = Resources.Colors.active
         label.text = "Pitch".uppercased()
+        label.textAlignment = .left
         
         return label
     }()
@@ -39,11 +41,11 @@ class DataCollectionCellView: UICollectionViewCell {
         
         backgroundColor = Resources.Colors.DataCell.background
         
-        heelLabel.centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
         heelLabel.topAnchor.constraint(equalTo: topAnchor).isActive = true
         heelLabel.heightAnchor.constraint(equalTo: heightAnchor, multiplier: 1/3).isActive = true
+        heelLabel.leadingAnchor.constraint(greaterThanOrEqualTo: leadingAnchor, constant: Constants.leftDistanceToView).isActive = true
         
-        pitchLabel.centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
+        pitchLabel.leadingAnchor.constraint(equalTo: heelLabel.leadingAnchor).isActive = true
         pitchLabel.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -Constants.galleryMinimumLineSpacing).isActive = true
         pitchLabel.heightAnchor.constraint(equalTo: heightAnchor, multiplier: 1/3).isActive = true
     }
