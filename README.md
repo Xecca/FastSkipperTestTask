@@ -17,7 +17,7 @@
 ## Реализовано:
 
 <p style="text-align:center;">
-<img src="./interface.gif" width="220" height="450" alt="Record Path">
+<img src="./interface.gif" width="240" height="450" alt="Record Path">
 </p>
 
 1 - Карта на базе **MapKit**. 
