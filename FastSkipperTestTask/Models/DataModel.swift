@@ -15,6 +15,11 @@ struct DataModel {
     var pitch: Double?
 }
 
+struct Coordinate {
+    var latitude: Double
+    var longitude: Double
+}
+
 struct Constants {
     static let leftDistanceToView: CGFloat = 16
     static let rigthDistanceToView: CGFloat = 16

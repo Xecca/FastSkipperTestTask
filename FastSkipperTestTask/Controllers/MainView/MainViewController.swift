@@ -8,30 +8,35 @@
 import UIKit
 import CoreMotion
 import CoreLocation
+import MapKit
 
 class MainViewController: BaseController {
-
+    
     private let headerView = HeaderView()
     private let navBarView = NavBarView()
     private var mapView = MapView()
     private let dataCollectionView = DataCollectionView()
     private let tabBarView = NavBarView()
     
-    let motionManager = CMMotionManager()
-    var dataManager = DataManager()
+    private var dataManager = DataManager()
     
-//    //FIXME: hard test
-//    let locationManager = CLLocationManager()
+    private let motionManager = CMMotionManager()
+    private lazy var coordinates: [CLLocationCoordinate2D] = []
+    //    //FIXME: hard test
+    private let locationManager = CLLocationManager()
+    private let locationUpdateInterval = 3.0
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        mapView.addCompassButton()
     }
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         
         stopMotionUpdates()
+        stopLocationUpdates()
     }
 }
 
@@ -40,22 +45,19 @@ extension MainViewController: CLLocationManagerDelegate {
         super.viewDidAppear(animated)
         
         startMotionUpdates()
-//        //FIXME: hard test for gyro
-//        locationManager.desiredAccuracy = kCLLocationAccuracyBest
-//        locationManager.delegate = self
-//        locationManager.requestWhenInUseAuthorization()
-//        locationManager.startUpdatingLocation()
-        
+        startLocationUpdates()
     }
 }
 
 // MARK: - Motion Controller
 extension MainViewController {
     func startMotionUpdates() {
-
+        
         motionManager.startDeviceMotionUpdates()
+        
         Timer.scheduledTimer(withTimeInterval: 1.0 / 5.0, repeats: true) { _ in
             if let motionData = self.motionManager.deviceMotion {
+
                 // pitch
                 let pitch = motionData.attitude.pitch
                 // heel/roll
@@ -67,13 +69,83 @@ extension MainViewController {
                 
                 self.didUpdateData(self.dataManager, motionData: dataModel)
             } else {
-                print("Can't get gyroData")
+                print("Can't get motionData")
             }
         }
     }
     
     func stopMotionUpdates() {
         motionManager.stopDeviceMotionUpdates()
+    }
+}
+
+// MARK: - Location Controller
+extension MainViewController: MKMapViewDelegate {
+    func startLocationUpdates() {
+
+        locationManager.delegate = self
+        locationManager.desiredAccuracy = kCLLocationAccuracyBest
+        locationManager.requestWhenInUseAuthorization()
+        locationManager.startUpdatingLocation()
+        
+        let regionRadius: CLLocationDistance = 500.0 // in meters
+        
+        mapView.showsUserLocation = true
+        
+        Timer.scheduledTimer(withTimeInterval: locationUpdateInterval, repeats: true) { _ in
+            
+            if let locationData = self.locationManager.location {
+                
+                let latitude = locationData.coordinate.latitude
+                let longitude = locationData.coordinate.longitude
+                let region = MKCoordinateRegion(center: locationData.coordinate, latitudinalMeters: regionRadius, longitudinalMeters: regionRadius)
+                let coordinate = CLLocationCoordinate2DMake(latitude, longitude)
+                
+                self.mapView.setRegion(region, animated: true)
+                self.mapView.delegate = self
+                
+                self.coordinates.append(coordinate)
+                
+                self.drawThePath()
+                
+                if self.coordinates.isEmpty {
+                    let annotation = MKPointAnnotation()
+                    
+                    annotation.coordinate = CLLocationCoordinate2D(latitude: self.coordinates.first!.latitude, longitude: self.coordinates.first!.longitude)
+                    annotation.title = "Start Point"
+                    annotation.subtitle = "Let's start from here"
+                    self.mapView.addAnnotation(annotation)
+                } else if self.coordinates.count >= 2 {
+//                    self.drawPathBy(self.coordinates)
+                }
+            }
+        }
+    }
+    
+    func stopLocationUpdates() {
+        locationManager.stopUpdatingLocation()
+    }
+}
+
+// MARK: - Drawing Map
+extension MainViewController {
+    func mapViewWillStartRenderingMap(_ mapView: MKMapView) {
+        print("rendering")
+    }
+    
+    func drawThePath() {
+        // produce overlay
+        let polyline = MKPolyline(coordinates: &coordinates, count: coordinates.count)
+
+        mapView.addOverlay(polyline)
+        
+        // render the overlay
+        mapView.renderer(for: polyline)
+    }
+    
+    func mapView(_ mapView: MKMapView, rendererFor overlay: MKOverlay) -> MKOverlayRenderer {
+        
+        return self.mapView.getOverlayRenderer(overlay)
     }
 }
 
