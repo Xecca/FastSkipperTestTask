@@ -13,7 +13,7 @@ class TabBarView: NavBarView {
         super.init(frame: frame)
         
         titleLabel.text = "Here Should be a TabBar".uppercased()
-        backgroundColor = .systemBlue
+        backgroundColor = Resources.Colors.TabBar.background
     }
     
     required init?(coder: NSCoder) {

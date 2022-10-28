@@ -26,7 +26,6 @@ final class MainViewController: BaseController, DataManagerDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        
     }
     
     override func viewWillDisappear(_ animated: Bool) {
