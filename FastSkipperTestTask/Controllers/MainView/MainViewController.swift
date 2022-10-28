@@ -55,8 +55,8 @@ extension MainViewController {
         
         motionManager.startDeviceMotionUpdates()
         
-        Timer.scheduledTimer(withTimeInterval: 1.0 / 5.0, repeats: true) { _ in
-            if let motionData = self.motionManager.deviceMotion {
+        Timer.scheduledTimer(withTimeInterval: 1.0 / 5.0, repeats: true) { [weak self] _ in
+            if let motionData = self?.motionManager.deviceMotion {
 
                 // pitch
                 let pitch = motionData.attitude.pitch
@@ -67,7 +67,9 @@ extension MainViewController {
                 dataModel.pitch = pitch
                 dataModel.heeling = heel
                 
-                self.didUpdateData(self.dataManager, motionData: dataModel)
+                if let manager = self?.dataManager {
+                    self?.didUpdateData(manager, motionData: dataModel)
+                }
             } else {
                 print("Can't get motionData")
             }
@@ -92,30 +94,30 @@ extension MainViewController: MKMapViewDelegate {
         
         mapView.showsUserLocation = true
         
-        Timer.scheduledTimer(withTimeInterval: locationUpdateInterval, repeats: true) { _ in
+        Timer.scheduledTimer(withTimeInterval: locationUpdateInterval, repeats: true) { [weak self] _ in
             
-            if let locationData = self.locationManager.location {
+            if let locationData = self?.locationManager.location {
                 
                 let latitude = locationData.coordinate.latitude
                 let longitude = locationData.coordinate.longitude
                 let region = MKCoordinateRegion(center: locationData.coordinate, latitudinalMeters: regionRadius, longitudinalMeters: regionRadius)
                 let coordinate = CLLocationCoordinate2DMake(latitude, longitude)
                 
-                self.mapView.setRegion(region, animated: true)
-                self.mapView.delegate = self
+                self?.mapView.setRegion(region, animated: true)
+                self?.mapView.delegate = self
                 
-                self.coordinates.append(coordinate)
+                self?.coordinates.append(coordinate)
                 
-                self.drawThePath()
+                self?.drawThePath()
                 
-                if self.coordinates.isEmpty {
+                if (self?.coordinates.isEmpty) != nil {
                     let annotation = MKPointAnnotation()
                     
-                    annotation.coordinate = CLLocationCoordinate2D(latitude: self.coordinates.first!.latitude, longitude: self.coordinates.first!.longitude)
+                    annotation.coordinate = CLLocationCoordinate2D(latitude: self?.coordinates.first!.latitude ?? 0, longitude: self?.coordinates.first!.longitude ?? 0)
                     annotation.title = "Start Point"
                     annotation.subtitle = "Let's start from here"
-                    self.mapView.addAnnotation(annotation)
-                } else if self.coordinates.count >= 2 {
+                    self?.mapView.addAnnotation(annotation)
+                } else if self?.coordinates.count ?? 0 >= 2 {
 //                    self.drawPathBy(self.coordinates)
                 }
             }
@@ -207,11 +209,9 @@ extension MainViewController {
         
         view.backgroundColor = Resources.Colors.background
     }
-    
 }
 
 // MARK: - DataManagerDelegate
-
 extension MainViewController {
     func didUpdateData(_ dataManager: DataManager, motionData: DataModel) {
         DispatchQueue.main.async {

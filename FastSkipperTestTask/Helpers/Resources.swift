@@ -13,6 +13,7 @@ enum Resources {
             UIFont(name: "Helvetica", size: size) ?? UIFont()
         }
     }
+    
     enum Colors {
         static let active = UIColor(hexString: "#437BFE")
         static let inactive = UIColor(hexString: "#929DA5")

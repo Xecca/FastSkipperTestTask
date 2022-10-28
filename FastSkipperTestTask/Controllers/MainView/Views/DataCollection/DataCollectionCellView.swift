@@ -53,8 +53,8 @@ class DataCollectionCellView: UICollectionViewCell {
     override func layoutSubviews() {
         super.layoutSubviews()
         
-        self.layer.cornerRadius = 10
-        self.layer.shadowRadius = 8
+        layer.cornerRadius = 10
+        layer.shadowRadius = 8
         layer.shadowOpacity = 0.3
         layer.shadowOffset = CGSize(width: 5, height: 8)
         
