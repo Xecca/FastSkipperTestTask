@@ -36,18 +36,9 @@ class DataCollectionCellView: UICollectionViewCell {
     override init(frame: CGRect) {
         super.init(frame: frame)
         
-        setupView(heelLabel)
-        setupView(pitchLabel)
-        
-        backgroundColor = Resources.Colors.DataCell.background
-        
-        heelLabel.topAnchor.constraint(equalTo: topAnchor).isActive = true
-        heelLabel.heightAnchor.constraint(equalTo: heightAnchor, multiplier: 1/3).isActive = true
-        heelLabel.leadingAnchor.constraint(greaterThanOrEqualTo: leadingAnchor, constant: Constants.leftDistanceToView).isActive = true
-        
-        pitchLabel.leadingAnchor.constraint(equalTo: heelLabel.leadingAnchor).isActive = true
-        pitchLabel.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -Constants.galleryMinimumLineSpacing).isActive = true
-        pitchLabel.heightAnchor.constraint(equalTo: heightAnchor, multiplier: 1/3).isActive = true
+        setupViews()
+        constraintViews()
+        configureAppearance()
     }
     
     override func layoutSubviews() {
@@ -66,3 +57,23 @@ class DataCollectionCellView: UICollectionViewCell {
     }
 }
 
+extension DataCollectionCellView {
+    func setupViews() {
+        setupView(heelLabel)
+        setupView(pitchLabel)
+    }
+    
+    func constraintViews() {
+        NSLayoutConstraint.activate([
+            heelLabel.centerYAnchor.constraint(equalTo: centerYAnchor, constant: -30),
+            heelLabel.leadingAnchor.constraint(greaterThanOrEqualTo: leadingAnchor, constant: 25),
+            
+            pitchLabel.centerYAnchor.constraint(equalTo: centerYAnchor, constant: 30),
+            pitchLabel.leadingAnchor.constraint(equalTo: heelLabel.leadingAnchor),
+        ])
+    }
+    
+    func configureAppearance() {
+        backgroundColor = Resources.Colors.DataCell.background
+    }
+}

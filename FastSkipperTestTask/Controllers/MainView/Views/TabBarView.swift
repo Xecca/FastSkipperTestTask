@@ -7,11 +7,12 @@
 
 import UIKit
 
-class TabBarView: UIView {
+class TabBarView: NavBarView {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
         
+        titleLabel.text = "Here Should be a TabBar".uppercased()
         backgroundColor = .systemBlue
     }
     

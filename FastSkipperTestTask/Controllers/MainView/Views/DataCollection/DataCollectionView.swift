@@ -10,26 +10,17 @@ import UIKit
 class DataCollectionView: UICollectionView {
     
     var cells: DataModel?
+    weak var dataManagerDelegate: DataManagerDelegate?
     
     init() {
         let layout = UICollectionViewFlowLayout()
         
+        layout.minimumLineSpacing = Constants.galleryMinimumLineSpacing
         layout.scrollDirection = .horizontal
         
         super.init(frame: .zero, collectionViewLayout: layout)
         
-        backgroundColor = .clear
-        
-        delegate = self
-        dataSource = self
-        
-        register(DataCollectionCellView.self, forCellWithReuseIdentifier: DataCollectionCellView.reuseID)
-        
-        layout.minimumLineSpacing = Constants.galleryMinimumLineSpacing
-        contentInset = UIEdgeInsets(top: 0, left: Constants.leftDistanceToView, bottom: 0, right: Constants.rigthDistanceToView)
-        
-        showsHorizontalScrollIndicator = false
-        showsVerticalScrollIndicator = false
+        setupViews()
     }
     
     required init?(coder: NSCoder) {
@@ -79,5 +70,22 @@ extension DataCollectionView: UICollectionViewDelegate, UICollectionViewDataSour
 extension DataCollectionView: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         return CGSize(width: Constants.galleryItemWidth, height: frame.height * 1)
+    }
+}
+
+extension DataCollectionView {
+    func setupViews() {
+        
+        backgroundColor = .clear
+        
+        delegate = self
+        dataSource = self
+        
+        register(DataCollectionCellView.self, forCellWithReuseIdentifier: DataCollectionCellView.reuseID)
+        
+        contentInset = UIEdgeInsets(top: 0, left: Constants.leftDistanceToView, bottom: 0, right: Constants.rigthDistanceToView)
+        
+        showsHorizontalScrollIndicator = false
+        showsVerticalScrollIndicator = false
     }
 }

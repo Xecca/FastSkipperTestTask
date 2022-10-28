@@ -7,9 +7,10 @@
 
 import UIKit
 import CoreMotion
+import CoreLocation
+//import MapKit
 
-protocol DataManagerDelegate {
-    
+protocol DataManagerDelegate: AnyObject {
     func didUpdateData(_ dataManager: DataManager, motionData: DataModel)
     func didFailWithError(error: Error)
 }

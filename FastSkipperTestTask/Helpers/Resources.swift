@@ -27,5 +27,9 @@ enum Resources {
         enum DataCell {
             static let background = UIColor(hexString: "#FFFFFF")
         }
+        
+        enum TabBar {
+            static let background = UIColor(hexString: "#132237")
+        }
     }
 }
